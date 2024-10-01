@@ -1,0 +1,21 @@
+{
+  "ModId": "MF.CostumeFramework.Reloaded",
+  "ModName": "Costume Framework for Metaphor: ReFantazio",
+  "ModAuthor": "RyoTune",
+  "ModVersion": "1.0.0",
+  "ModDescription": "Streamlines and enhances outfit mods!",
+  "ModDll": "MF.CostumeFramework.Reloaded.dll",
+  "ModIcon": "Preview.png",
+  "ModR2RManagedDll32": "x86/MF.CostumeFramework.Reloaded.dll",
+  "ModR2RManagedDll64": "x64/MF.CostumeFramework.Reloaded.dll",
+  "ModNativeDll32": "",
+  "ModNativeDll64": "",
+  "IsLibrary": false,
+  "ReleaseMetadataFileName": "MF.CostumeFramework.Reloaded.ReleaseMetadata.json",
+  "PluginData": {},
+  "IsUniversalMod": false,
+  "ModDependencies": [ "reloaded.sharedlib.hooks", "Reloaded.Memory.SigScan.ReloadedII" ],
+  "OptionalDependencies": [],
+  "SupportedAppId": [],
+  "ProjectUrl": ""
+}
