@@ -1,5 +1,6 @@
 ﻿using CriFs.V2.Hook.Interfaces;
 using MF.CostumeFramework.Reloaded.Costumes.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MF.CostumeFramework.Reloaded.Costumes;
 
@@ -12,6 +13,14 @@ internal class CostumeRegistry
     {
         this.costumes = new GameCostumes();
         this.costumeFactory = new CostumeFactory(criFsApi, this.costumes);
+    }
+
+    public GameCostumes Costumes => this.costumes;
+
+    public bool TryGetCostumeByItemId(Character character, int costumeItemId, [NotNullWhen(true)] out Costume? costume)
+    {
+        costume = this.costumes.FirstOrDefault(x => x.Character == character && x.CostumeItemId == costumeItemId);
+        return costume != null;
     }
 
     public void AddCostumesFolder(string modId, string costumesDir)

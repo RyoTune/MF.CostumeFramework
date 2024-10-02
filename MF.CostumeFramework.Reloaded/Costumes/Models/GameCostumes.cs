@@ -4,10 +4,10 @@ namespace MF.CostumeFramework.Reloaded.Costumes.Models;
 
 internal class GameCostumes : IReadOnlyList<Costume>
 {
-    public const int BASE_MOD_COSTUME_ID = 1000;
-    public const int RANDOMIZED_COSTUME_ID = 10001;
-    public const int NUM_GAME_COSTUMES = 92;
-    public const int NUM_MOD_COSTUMES = 1000;
+    public const ushort BASE_MOD_COSTUME_ID = 1000;
+    public const ushort RANDOMIZED_COSTUME_ID = 10001;
+    public const ushort NUM_GAME_COSTUMES = 92;
+    public const ushort NUM_MOD_COSTUMES = 1000;
 
     private readonly List<Costume> _costumes = [];
     private readonly List<Costume> _modCostumes = [];
@@ -21,7 +21,7 @@ internal class GameCostumes : IReadOnlyList<Costume>
 
         for (int i = 0; i < NUM_MOD_COSTUMES; i++)
         {
-            var costume = new Costume(BASE_MOD_COSTUME_ID + i);
+            var costume = new Costume((ushort)(BASE_MOD_COSTUME_ID + i));
             _costumes.Add(costume);
             _modCostumes.Add(costume);
         }

@@ -8,12 +8,14 @@ internal class Costume
     {
     }
 
-    public Costume(int costumeId)
+    public Costume(ushort costumeId)
     {
         this.CostumeId = costumeId;
     }
 
-    public int CostumeId { get; }
+    public ushort CostumeId { get; }
+
+    public int CostumeItemId { get; private set; }
 
     public string Name { get; set; } = "Missing Name";
 
@@ -30,4 +32,10 @@ internal class Costume
     public string? MusicScriptFile { get; set; }
 
     public string? BattleThemeFile { get; set; }
+
+    /// <summary>
+    /// Sets the costume item ID. Costume Item ID = Actual Item ID - Base Costume Item ID (0x6000).
+    /// </summary>
+    /// <param name="costumeItemId">Costume Item ID.</param>
+    public void SetCostumeItemId(int costumeItemId) => this.CostumeItemId = costumeItemId;
 }
