@@ -1,0 +1,3 @@
+[submodule "submodules/MF.Toolkit"]
+	path = submodules/MF.Toolkit
+	url = https://github.com/RyoTune/MF.Toolkit.git
