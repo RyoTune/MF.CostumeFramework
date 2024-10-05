@@ -2,7 +2,7 @@
 
 internal class Costume
 {
-    private const string DEF_DESC = "Costume added with Costume Framework.";
+    private const string DEF_DESC = "Costume added with <COLOR 0>Costume Framework<COLOR -1>.";
 
     public Costume()
     {
@@ -32,6 +32,10 @@ internal class Costume
     public string? MusicScriptFile { get; set; }
 
     public string? BattleThemeFile { get; set; }
+
+    public string? NameMsgLabel { get; set; }
+
+    public string? DescMsgLabel { get; set; }
 
     /// <summary>
     /// Sets the costume item ID. Costume Item ID = Actual Item ID - Base Costume Item ID (0x6000).

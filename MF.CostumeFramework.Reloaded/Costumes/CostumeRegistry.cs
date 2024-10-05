@@ -1,5 +1,6 @@
 ﻿using CriFs.V2.Hook.Interfaces;
 using MF.CostumeFramework.Reloaded.Costumes.Models;
+using MF.Toolkit.Interfaces.Messages;
 using System.Diagnostics.CodeAnalysis;
 
 namespace MF.CostumeFramework.Reloaded.Costumes;
@@ -9,10 +10,10 @@ internal class CostumeRegistry
     private readonly GameCostumes costumes;
     private readonly CostumeFactory costumeFactory;
 
-    public CostumeRegistry(ICriFsRedirectorApi criFsApi)
+    public CostumeRegistry(ICriFsRedirectorApi criFsApi, IMessage msg)
     {
         this.costumes = new GameCostumes();
-        this.costumeFactory = new CostumeFactory(criFsApi, this.costumes);
+        this.costumeFactory = new CostumeFactory(criFsApi, msg, this.costumes);
     }
 
     public GameCostumes Costumes => this.costumes;

@@ -45,7 +45,7 @@ public class Mod : ModBase
         this.modLoader.GetController<IMetaphorLibrary>().TryGetTarget(out var metaphor);
         this.modLoader.GetController<IMessage>().TryGetTarget(out var msg);
 
-        this.costumeRegistry = new CostumeRegistry(criFsApi!);
+        this.costumeRegistry = new CostumeRegistry(criFsApi!, msg!);
         this.costumeService = new CostumeService(metaphor!, msg!, this.costumeRegistry);
 
         this.modLoader.ModLoaded += this.OnModLoaded;

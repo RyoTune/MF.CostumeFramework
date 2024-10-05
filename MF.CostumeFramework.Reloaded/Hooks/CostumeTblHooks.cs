@@ -12,9 +12,6 @@ internal unsafe class CostumeTblHooks
     private IReverseWrapper<PostLoadCostumeTbl>? loadCostumeWrapper;
     private IAsmHook? loadCostumeAsm;
 
-    private delegate MSG* GetItemDescriptionMsg(uint* itemId, uint* msgFlags);
-    private IHook<GetItemDescriptionMsg>? getItemDescHook;
-
     private readonly IMessage msg;
     private readonly CostumeRegistry registry;
 
@@ -65,10 +62,10 @@ internal unsafe class CostumeTblHooks
                 item->EquipFlag = GetEquippable(newCostume.Character);
                 item->CostumeId = newCostume.CostumeId;
                 newCostume.SetCostumeItemId(i);
-                this.msg.SetItemText(i + 0x6000, ItemText.Name, newCostume.Name);
-                this.msg.SetItemText(i + 0x6000, ItemText.Description, newCostume.Description);
+                this.msg.SetItemMessage(i + 0x6000, ItemMessage.Name, newCostume.NameMsgLabel!);
+                this.msg.SetItemMessage(i + 0x6000, ItemMessage.Description, newCostume.DescMsgLabel!);
                 addedCostumes.Add(newCostume);
-                Log.Information($"Costume added for: {newCostume.Character} || Costume ID: {newCostume.CostumeId} || Costume Item ID: {newCostume.CostumeItemId}");
+                Log.Debug($"Costume added for: {newCostume.Character} || Costume ID: {newCostume.CostumeId} || Costume Item ID: {newCostume.CostumeItemId}");
             }
         }
 

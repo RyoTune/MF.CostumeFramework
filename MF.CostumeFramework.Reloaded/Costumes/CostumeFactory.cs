@@ -1,13 +1,14 @@
 ﻿using CriFs.V2.Hook.Interfaces;
 using MF.CostumeFramework.Reloaded.Costumes.Models;
 using MF.CostumeFramework.Reloaded.Utils;
-
+using MF.Toolkit.Interfaces.Messages;
 using static MF.CostumeFramework.Reloaded.Utils.ModUtils;
 
 namespace MF.CostumeFramework.Reloaded.Costumes;
 
-internal class CostumeFactory(ICriFsRedirectorApi criFsApi, GameCostumes costumes)
+internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCostumes costumes)
 {
+    private readonly IMessage msg = msg;
     private readonly ICriFsRedirectorApi criFsApi = criFsApi;
     private readonly GameCostumes costumes = costumes;
 
@@ -24,8 +25,15 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, GameCostumes costume
         LoadCostumeFiles(costume, costumeDir);
         //LoadCostumeRyo(costume, costumeDir);
         this.BindAssets(costume);
+        this.RegisterMessages(costume);
         Log.Information($"Loaded Costume ({costume.Character}): {costume.Name} || ID: {costume.CostumeId} || Mod: {ctx.ModId}");
         return costume;
+    }
+
+    private void RegisterMessages(Costume costume)
+    {
+        costume.NameMsgLabel = this.msg.CreateItemMessage(ItemMessage.Name, costume.Name);
+        costume.DescMsgLabel = this.msg.CreateItemMessage(ItemMessage.Description, costume.Description);
     }
 
     private static void ApplyCostumeConfig(Costume costume, CostumeConfig config)
@@ -45,7 +53,7 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, GameCostumes costume
 
         SetCostumeFile(Path.Join(costumeDir, "music.pme"), path => costume.MusicScriptFile = path);
         SetCostumeFile(Path.Join(costumeDir, "battle.theme.pme"), path => costume.BattleThemeFile = path);
-        SetCostumeFile(Path.Join(costumeDir, "description.txt"), path => costume.Description = File.ReadAllText(path));
+        SetCostumeFile(Path.Join(costumeDir, "description.msg"), path => costume.Description = File.ReadAllText(path));
     }
 
     private void BindAssets(Costume costume)
