@@ -55,6 +55,7 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCo
         itemMessages.EN.SetDescription(costume.Description);
         foreach (var lang in Enum.GetValues<Language>())
         {
+            if (lang == Language.Any) continue;
             SetCostumeFile(Path.Join(costumeDir, $"name.{lang.ToCode()}.msg"), path => itemMessages[lang].SetName(File.ReadAllText(path)));
             SetCostumeFile(Path.Join(costumeDir, $"description.{lang.ToCode()}.msg"), path => itemMessages[lang].SetDescription(File.ReadAllText(path)));
         }
