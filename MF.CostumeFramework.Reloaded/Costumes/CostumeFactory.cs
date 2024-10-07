@@ -1,6 +1,7 @@
 ﻿using CriFs.V2.Hook.Interfaces;
 using MF.CostumeFramework.Reloaded.Costumes.Models;
 using MF.CostumeFramework.Reloaded.Utils;
+using MF.Toolkit.Interfaces.Common;
 using MF.Toolkit.Interfaces.Messages;
 using static MF.CostumeFramework.Reloaded.Utils.ModUtils;
 
@@ -25,15 +26,8 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCo
         LoadCostumeFiles(costume, costumeDir);
         //LoadCostumeRyo(costume, costumeDir);
         this.BindAssets(costume);
-        this.RegisterMessages(costume);
         Log.Information($"Loaded Costume ({costume.Character}): {costume.Name} || ID: {costume.CostumeId} || Mod: {ctx.ModId}");
         return costume;
-    }
-
-    private void RegisterMessages(Costume costume)
-    {
-        costume.NameMsgLabel = this.msg.CreateItemMessage(ItemMessage.Name, costume.Name);
-        costume.DescMsgLabel = this.msg.CreateItemMessage(ItemMessage.Description, costume.Description);
     }
 
     private static void ApplyCostumeConfig(Costume costume, CostumeConfig config)
@@ -41,7 +35,7 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCo
         IfNotNull(config.Name, value => costume.Config.Name = value);
     }
 
-    private static void LoadCostumeFiles(Costume costume, string costumeDir)
+    private void LoadCostumeFiles(Costume costume, string costumeDir)
     {
         SetCostumeFile(Path.Join(costumeDir, "char_battle.gfs"), path => costume.Config.Battle.GfsPath = path);
         SetCostumeFile(Path.Join(costumeDir, "char_field.gfs"), path => costume.Config.Field.GfsPath = path);
@@ -53,7 +47,17 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCo
 
         SetCostumeFile(Path.Join(costumeDir, "music.pme"), path => costume.MusicScriptFile = path);
         SetCostumeFile(Path.Join(costumeDir, "battle.theme.pme"), path => costume.BattleThemeFile = path);
-        SetCostumeFile(Path.Join(costumeDir, "description.msg"), path => costume.Description = File.ReadAllText(path));
+
+        var itemMessages = msg.CreateItemMessages();
+
+        costume.ItemMessageLabel = itemMessages.Label;
+        itemMessages.EN.SetName(costume.Name);
+        itemMessages.EN.SetDescription(costume.Description);
+        foreach (var lang in Enum.GetValues<Language>())
+        {
+            SetCostumeFile(Path.Join(costumeDir, $"name.{lang.ToCode()}.msg"), path => itemMessages[lang].SetName(File.ReadAllText(path)));
+            SetCostumeFile(Path.Join(costumeDir, $"description.{lang.ToCode()}.msg"), path => itemMessages[lang].SetDescription(File.ReadAllText(path)));
+        }
     }
 
     private void BindAssets(Costume costume)

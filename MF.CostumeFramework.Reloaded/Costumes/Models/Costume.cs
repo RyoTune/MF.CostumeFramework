@@ -33,9 +33,7 @@ internal class Costume
 
     public string? BattleThemeFile { get; set; }
 
-    public string? NameMsgLabel { get; set; }
-
-    public string? DescMsgLabel { get; set; }
+    public string? ItemMessageLabel { get; set; }
 
     /// <summary>
     /// Sets the costume item ID. Costume Item ID = Actual Item ID - Base Costume Item ID (0x6000).

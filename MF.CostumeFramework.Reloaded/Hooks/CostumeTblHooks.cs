@@ -61,9 +61,11 @@ internal unsafe class CostumeTblHooks
             {
                 item->EquipFlag = GetEquippable(newCostume.Character);
                 item->CostumeId = newCostume.CostumeId;
+                item->Rarity = Rarity.Legendary;
                 newCostume.SetCostumeItemId(i);
-                this.msg.SetItemMessage(i + 0x6000, ItemMessage.Name, newCostume.NameMsgLabel!);
-                this.msg.SetItemMessage(i + 0x6000, ItemMessage.Description, newCostume.DescMsgLabel!);
+
+                this.msg.SetItemMessage(i + 0x6000, ItemMsg.Name, newCostume.ItemMessageLabel!);
+                this.msg.SetItemMessage(i + 0x6000, ItemMsg.Description, newCostume.ItemMessageLabel!);
                 addedCostumes.Add(newCostume);
                 Log.Debug($"Costume added for: {newCostume.Character} || Costume ID: {newCostume.CostumeId} || Costume Item ID: {newCostume.CostumeItemId}");
             }
@@ -124,7 +126,7 @@ public unsafe struct CostumeItem
     public uint Icon = 59;
     public GearEquippable EquipFlag;
     public ushort Field3;
-    public ushort Rarity = 3;
+    public Rarity Rarity = Rarity.Common;
     public ushort CostumeId;
     public ItemMsgSerial MsgSerial;
 }
@@ -147,4 +149,13 @@ public enum GearEquippable
     GriusEquippable = 1 << 10,
     GallicaEquippable = 1 << 11,
     Unknown = 1 << 12,
+}
+
+public enum Rarity : ushort
+{
+    //None, // Might cause crashes.
+    Common = 1,
+    Uncommon,
+    Rare,
+    Legendary,
 }
