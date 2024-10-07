@@ -21,7 +21,7 @@ internal static class ICriFsRedirectorApiExtensions
                 },
             ];
 
-            Log.Information($"Path: {newPath}\nBinded: {ogPath}");
+            Log.Information($"Binded: {ogPath}\nPath: {newPath}");
         });
     }
 }
