@@ -1,5 +1,6 @@
 ﻿using MF.CostumeFramework.Reloaded.Costumes;
 using MF.CostumeFramework.Reloaded.Costumes.Models;
+using MF.Toolkit.Interfaces.Inventory;
 using MF.Toolkit.Interfaces.Messages;
 using Reloaded.Hooks.Definitions;
 using System.Runtime.InteropServices;
@@ -12,13 +13,15 @@ internal unsafe class CostumeTblHooks
     private IReverseWrapper<PostLoadCostumeTbl>? loadCostumeWrapper;
     private IAsmHook? loadCostumeAsm;
 
-    private readonly IMessage msg;
-    private readonly CostumeRegistry registry;
+    private readonly IMessage _msg;
+    private readonly IInventory _inv;
+    private readonly CostumeRegistry _registry;
 
-    public CostumeTblHooks(IMessage msg, CostumeRegistry costumes)
+    public CostumeTblHooks(IMessage msg, IInventory inv, CostumeRegistry costumes)
     {
-        this.msg = msg;
-        this.registry = costumes;
+        _msg = msg;
+        _inv = inv;
+        _registry = costumes;
 
         ScanHooks.Add(
             "Load CostumeItem.TBL",
@@ -30,11 +33,11 @@ internal unsafe class CostumeTblHooks
                     "use64",
                     "mov rcx, rax",
                     Utilities.PushCallerRegisters,
-                    hooks.Utilities.GetAbsoluteCallMnemonics(LoadCostume, out this.loadCostumeWrapper),
+                    hooks.Utilities.GetAbsoluteCallMnemonics(LoadCostume, out loadCostumeWrapper),
                     Utilities.PopCallerRegisters,
                 };
 
-                this.loadCostumeAsm = hooks.CreateAsmHook(patch, result).Activate();
+                loadCostumeAsm = hooks.CreateAsmHook(patch, result).Activate();
             });
     }
 
@@ -56,16 +59,17 @@ internal unsafe class CostumeTblHooks
             *item = new CostumeItem();
             item->MsgSerial.UseCustomSerial();
 
-            var newCostume = this.registry.Costumes.FirstOrDefault(x => !addedCostumes.Contains(x));
+            var newCostume = _registry.Costumes.FirstOrDefault(x => !addedCostumes.Contains(x));
             if (newCostume != null)
             {
                 item->EquipFlag = GetEquippable(newCostume.Character);
                 item->CostumeId = newCostume.CostumeId;
                 item->Rarity = Rarity.Legendary;
                 newCostume.SetCostumeItemId(i);
+                _inv.UnlockItem(i + 0x6000);
 
-                this.msg.SetItemMessage(i + 0x6000, ItemMsg.Name, newCostume.ItemMessageLabel!);
-                this.msg.SetItemMessage(i + 0x6000, ItemMsg.Description, newCostume.ItemMessageLabel!);
+                _msg.SetItemMessage(i + 0x6000, ItemMsg.Name, newCostume.ItemMessageLabel!);
+                _msg.SetItemMessage(i + 0x6000, ItemMsg.Description, newCostume.ItemMessageLabel!);
                 addedCostumes.Add(newCostume);
                 Log.Debug($"Costume added for: {newCostume.Character} || Costume ID: {newCostume.CostumeId} || Costume Item ID: {newCostume.CostumeItemId}");
             }

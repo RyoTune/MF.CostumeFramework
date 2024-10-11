@@ -2,6 +2,7 @@
 using MF.CostumeFramework.Reloaded.Configuration;
 using MF.CostumeFramework.Reloaded.Costumes;
 using MF.CostumeFramework.Reloaded.Template;
+using MF.Toolkit.Interfaces.Inventory;
 using MF.Toolkit.Interfaces.Library;
 using MF.Toolkit.Interfaces.Messages;
 using Reloaded.Hooks.ReloadedII.Interfaces;
@@ -15,7 +16,7 @@ public class Mod : ModBase
 {
     public const string NAME = "MF.CostumeFramework.Reloaded";
 
-    private readonly IModLoader modLoader;
+    private readonly IModLoader _modLoader;
     private readonly IReloadedHooks? hooks;
     private readonly ILogger log;
     private readonly IMod owner;
@@ -28,40 +29,41 @@ public class Mod : ModBase
 
     public Mod(ModContext context)
     {
-        this.modLoader = context.ModLoader;
-        this.hooks = context.Hooks;
-        this.log = context.Logger;
-        this.owner = context.Owner;
-        this.config = context.Configuration;
-        this.modConfig = context.ModConfig;
+        _modLoader = context.ModLoader;
+        hooks = context.Hooks;
+        log = context.Logger;
+        owner = context.Owner;
+        config = context.Configuration;
+        modConfig = context.ModConfig;
 #if DEBUG
         Debugger.Launch();
 #endif
 
-        Project.Init(this.modConfig, this.modLoader, this.log, true);
-        Log.LogLevel = this.config.LogLevel;
+        Project.Init(modConfig, _modLoader, log, true);
+        Log.LogLevel = config.LogLevel;
 
-        this.modLoader.GetController<ICriFsRedirectorApi>().TryGetTarget(out var criFsApi);
-        this.modLoader.GetController<IMetaphorLibrary>().TryGetTarget(out var metaphor);
-        this.modLoader.GetController<IMessage>().TryGetTarget(out var msg);
+        _modLoader.GetController<ICriFsRedirectorApi>().TryGetTarget(out var criFsApi);
+        _modLoader.GetController<IMetaphorLibrary>().TryGetTarget(out var metaphor);
+        _modLoader.GetController<IMessage>().TryGetTarget(out var msg);
+        _modLoader.GetController<IInventory>().TryGetTarget(out var inv);
 
-        this.costumeRegistry = new CostumeRegistry(criFsApi!, msg!);
-        this.costumeService = new CostumeService(metaphor!, msg!, this.costumeRegistry);
+        costumeRegistry = new CostumeRegistry(criFsApi!, msg!);
+        costumeService = new CostumeService(metaphor!, msg!, inv!, costumeRegistry);
 
-        this.modLoader.ModLoaded += this.OnModLoaded;
+        _modLoader.ModLoaded += OnModLoaded;
         Project.Start();
     }
 
     private void OnModLoaded(IModV1 mod, IModConfigV1 config)
     {
-        var modDir = this.modLoader.GetDirectoryForModId(config.ModId);
+        var modDir = _modLoader.GetDirectoryForModId(config.ModId);
         var costumesDir = Path.Join(modDir, "costumes");
         if (!Directory.Exists(costumesDir))
         {
             return;
         }
 
-        this.costumeRegistry.AddCostumesFolder(config.ModId, costumesDir);
+        costumeRegistry.AddCostumesFolder(config.ModId, costumesDir);
     }
 
     #region Standard Overrides
