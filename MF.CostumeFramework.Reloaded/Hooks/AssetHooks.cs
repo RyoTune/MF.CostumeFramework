@@ -37,7 +37,7 @@ internal class AssetHooks : IUseConfig
 
     private nint GetAssetImpl(nint param1, nint param2, AssetType assetType, int majorId, int minorId, int subId, int param7, bool isTex)
     {
-        Log.Verbose($"{nameof(GetAsset)} || {assetType} || {majorId} || {minorId} || {subId}");
+        Log.Verbose($"{nameof(GetAsset)} || {assetType} || {majorId} || {minorId} || {subId} || {param7}");
 
         var ogResult = isTex ? this.getTexHook!.OriginalFunction(param1, param2, assetType, majorId, minorId, subId, param7)
             : this.getAssetHook!.OriginalFunction(param1, param2, assetType, majorId, minorId, subId, param7);
@@ -55,24 +55,51 @@ internal class AssetHooks : IUseConfig
 
         Log.Debug($"{nameof(GetAsset)} || {assetType} || {character} || {minorId} || {subId}");
 
-        // Field asset but field redirection not enabled.
-        if (assetType == AssetType.CharacterGfs_F && !_useFieldCostumes)
-        {
-            return ogResult;
-        }
-
-        // Event asset but event redirection not enabled.
-        if (assetType == AssetType.CharacterGfs_E && !_useEventCostumes)
-        {
-            return ogResult;
-        }
-
         var costumeItemId = this.mf.CharaGetEquip((int)character, 4) - CostumeItem.BASE_ITEM_ID;
         if (this.registry.TryGetCostumeByItemId(character, costumeItemId, out var costume))
         {
-            assetType = AssetType.CharacterGfs_B;
-            minorId = costume.CostumeId;
-            Log.Information($"Using Costume || {character} || Costume: {costume.Name} || {costume.CostumeId}");
+            switch (assetType)
+            {
+                case AssetType.CharacterGfs_B:
+                    if (costume.Config.Battle.GfsPath != null)
+                    {
+                        minorId = costume.CostumeId;
+                        Log.Debug($"Costume (Battle): {costume.Character} || {costume.Name} || {costume.CostumeId}");
+                    }
+                    break;
+
+                // Use GFS provided by costume for fields and events
+                // or use battle GFS if forcing costumes.
+                case AssetType.CharacterGfs_F_2:
+                case AssetType.CharacterGfs_F_5:
+                    if (costume.Config.Field.GfsPath != null)
+                    {
+                        minorId = costume.CostumeId;
+                        Log.Debug($"Costume (Field): {costume.Character} || {costume.Name} || {costume.CostumeId}");
+                    }
+                    else if (_useFieldCostumes && costume.Config.Battle.GfsPath != null)
+                    {
+                        minorId = costume.CostumeId;
+                        assetType = AssetType.CharacterGfs_B;
+                        Log.Debug($"Costume (Field->Battle): {costume.Character} || {costume.Name} || {costume.CostumeId}");
+                    }
+                    break;
+                case AssetType.CharacterGfs_E:
+                    if (costume.Config.Event.GfsPath != null)
+                    {
+                        minorId = costume.CostumeId;
+                        Log.Debug($"Costume (Event): {costume.Character} || {costume.Name} || {costume.CostumeId}");
+                    }
+                    else if (_useEventCostumes && costume.Config.Battle.GfsPath != null)
+                    {
+                        minorId = costume.CostumeId;
+                        assetType = AssetType.CharacterGfs_B;
+                        Log.Debug($"Costume (Event->Battle): {costume.Character} || {costume.Name} || {costume.CostumeId}");
+                    }
+                    break;
+            }
+
+            Log.Information($"Redirected Asset || {character} || Costume: {costume.Name} || {costume.CostumeId}");
         }
 
         return isTex ? this.getTexHook!.OriginalFunction(param1, param2, assetType, majorId, minorId, subId, param7)
@@ -87,7 +114,8 @@ internal class AssetHooks : IUseConfig
 
     private static bool IsCharModel(AssetType type)
         => type == AssetType.CharacterGfs_E
-        || type == AssetType.CharacterGfs_F
+        || type == AssetType.CharacterGfs_F_2
+        || type == AssetType.CharacterGfs_F_5
         || type == AssetType.CharacterGfs_B;
 
     private enum AssetType
@@ -101,7 +129,8 @@ internal class AssetHooks : IUseConfig
         Object14 = 14,
         FieldEffect = 10,
         CharacterGfs_B = 1,
-        CharacterGfs_F = 2,
+        CharacterGfs_F_2 = 2,
+        CharacterGfs_F_5 = 5,
         CharacterGfs_E = 35,
         ModelWeapon = 16,
         ModelArchetype = 33,
