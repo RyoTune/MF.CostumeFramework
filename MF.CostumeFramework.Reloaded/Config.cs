@@ -9,6 +9,14 @@ public class Config : Configurable<Config>
     [DisplayName("Log Level")]
     [DefaultValue(LogLevel.Information)]
     public LogLevel LogLevel { get; set; } = LogLevel.Information;
+
+    [Category("Preferences")]
+    [DisplayName("Use Costumes in Fields")]
+    public bool UseFieldCostumes { get; set; }
+
+    [Category("Preferences")]
+    [DisplayName("Use Costumes in Events")]
+    public bool UseEventCostumes { get; set; }
 }
 
 /// <summary>

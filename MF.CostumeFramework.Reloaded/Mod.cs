@@ -1,4 +1,5 @@
 ﻿using CriFs.V2.Hook.Interfaces;
+using MF.CostumeFramework.Reloaded.Common;
 using MF.CostumeFramework.Reloaded.Configuration;
 using MF.CostumeFramework.Reloaded.Costumes;
 using MF.CostumeFramework.Reloaded.Template;
@@ -24,8 +25,9 @@ public class Mod : ModBase
     private Config config;
     private readonly IModConfig modConfig;
 
-    private readonly CostumeRegistry costumeRegistry;
-    private readonly CostumeService costumeService;
+    private readonly CostumeRegistry _costumeRegistry;
+    private readonly CostumeService _costumeService;
+    private readonly List<IUseConfig> _configurables = [];
 
     public Mod(ModContext context)
     {
@@ -47,10 +49,12 @@ public class Mod : ModBase
         _modLoader.GetController<IMessage>().TryGetTarget(out var msg);
         _modLoader.GetController<IInventory>().TryGetTarget(out var inv);
 
-        costumeRegistry = new CostumeRegistry(criFsApi!, msg!);
-        costumeService = new CostumeService(metaphor!, msg!, inv!, costumeRegistry);
+        _costumeRegistry = new CostumeRegistry(criFsApi!, msg!);
+        _costumeService = new CostumeService(metaphor!, msg!, inv!, _costumeRegistry);
+        _configurables.Add(_costumeService);
 
         _modLoader.ModLoaded += OnModLoaded;
+        ConfigurationUpdated(config);
         Project.Start();
     }
 
@@ -63,7 +67,7 @@ public class Mod : ModBase
             return;
         }
 
-        costumeRegistry.AddCostumesFolder(config.ModId, costumesDir);
+        _costumeRegistry.AddCostumesFolder(config.ModId, costumesDir);
     }
 
     #region Standard Overrides
@@ -73,6 +77,11 @@ public class Mod : ModBase
         // ... your code here.
         config = configuration;
         log.WriteLine($"[{modConfig.ModId}] Config Updated: Applying");
+        Log.LogLevel = config.LogLevel;
+        foreach (var configurable in _configurables)
+        {
+            configurable.UpdateConfig(config);
+        }
     }
     #endregion
 

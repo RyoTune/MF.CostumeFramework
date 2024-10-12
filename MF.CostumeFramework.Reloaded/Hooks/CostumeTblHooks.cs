@@ -146,13 +146,16 @@ public enum GearEquippable
     Hulkenberg = 1 << 3,
     Heismay = 1 << 4,
     Junah = 1 << 5,
-    EuphaEquippable = 1 << 6,
-    Char7Equippable = 1 << 7,
-    Char8Equippable = 1 << 8,
-    Char9Equippable = 1 << 9,
-    GriusEquippable = 1 << 10,
-    GallicaEquippable = 1 << 11,
-    Unknown = 1 << 12,
+    Eupha = 1 << 6,
+    Fiedlio = 1 << 7,
+    Basilio = 1 << 8,
+    Prince = 1 << 9,
+    Grius = 1 << 10,
+    Gallica = 1 << 11,
+    PX = 1 << 12,
+    Neuras = 1 << 13,
+    Rella = 1 << 14,
+    Louis = 1 << 15,
 }
 
 public enum Rarity : ushort
