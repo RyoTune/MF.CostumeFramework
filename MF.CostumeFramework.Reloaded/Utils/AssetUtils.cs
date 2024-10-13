@@ -4,15 +4,15 @@ namespace MF.CostumeFramework.Reloaded.Utils;
 
 internal class AssetUtils
 {
-    public static string GetAsssetPath(Character character, int costumeId, AssetType type)
+    public static string GetAsssetPath(Character character, int costumeId, CostumeAsset type)
         => type switch
         {
-            AssetType.CharBattleGfs => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_B.GFS",
-            AssetType.CharFieldGfs => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_F.GFS",
-            AssetType.CharEventGfs => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_E.GFS",
-            AssetType.CharBattleTex => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_B.TEX",
-            AssetType.CharFieldTex => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_F.TEX",
-            AssetType.CharEventTex => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_E.TEX",
+            CostumeAsset.CharBattleGfs => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_B.GFS",
+            CostumeAsset.CharFieldGfs => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_F.GFS",
+            CostumeAsset.CharEventGfs => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_E.GFS",
+            CostumeAsset.CharBattleTex => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_B.TEX",
+            CostumeAsset.CharFieldTex => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_F.TEX",
+            CostumeAsset.CharEventTex => $"COMMON/model/character/{GetCharIdString(character)}/c_{GetCharIdString(character)}_{GetCostumeIdString(costumeId)}_E.TEX",
             _ => throw new Exception(),
         };
 
@@ -23,7 +23,7 @@ internal class AssetUtils
         => costumeId.ToString("000");
 }
 
-internal enum AssetType
+internal enum CostumeAsset
 {
     // Character GFS
     CharBattleGfs,

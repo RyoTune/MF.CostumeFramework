@@ -10,22 +10,21 @@ namespace MF.CostumeFramework.Reloaded.Costumes;
 internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCostumes costumes)
 {
     private readonly IMessage msg = msg;
-    private readonly ICriFsRedirectorApi criFsApi = criFsApi;
+    private readonly ICriFsRedirectorApi _criFsApi = criFsApi;
     private readonly GameCostumes costumes = costumes;
 
     public Costume? Create(CostumeContext ctx, Character character, string costumeDir)
     {
         var config = GetCostumeConfig(costumeDir);
-        var costume = this.CreateOrFindCostume(ctx.ModId, character, config.Name ?? Path.GetFileName(costumeDir));
+        var costume = CreateOrFindCostume(ctx.ModId, character, config.Name ?? Path.GetFileName(costumeDir));
         if (costume == null)
         {
             return null;
         }
 
         ApplyCostumeConfig(costume, config);
-        LoadCostumeFiles(costume, costumeDir);
+        LoadCostumeFiles(ctx, costume, costumeDir);
         //LoadCostumeRyo(costume, costumeDir);
-        this.BindAssets(costume);
         Log.Information($"Loaded Costume ({costume.Character}): {costume.Name} || ID: {costume.CostumeId} || Mod: {ctx.ModId}");
         return costume;
     }
@@ -35,15 +34,15 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCo
         IfNotNull(config.Name, value => costume.Config.Name = value);
     }
 
-    private void LoadCostumeFiles(Costume costume, string costumeDir)
+    private void LoadCostumeFiles(CostumeContext ctx, Costume costume, string costumeDir)
     {
-        SetCostumeFile(Path.Join(costumeDir, "char_battle.gfs"), path => costume.Config.Battle.GfsPath = path);
-        SetCostumeFile(Path.Join(costumeDir, "char_field.gfs"), path => costume.Config.Field.GfsPath = path);
-        SetCostumeFile(Path.Join(costumeDir, "char_event.gfs"), path => costume.Config.Event.GfsPath = path);
+        SetCostumeFile(Path.Join(costumeDir, "char_battle.gfs"), path => costume.Config.Battle.GfsPath = CreateBindPath(ctx, costumeDir, path));
+        SetCostumeFile(Path.Join(costumeDir, "char_field.gfs"), path => costume.Config.Field.GfsPath = CreateBindPath(ctx, costumeDir, path));
+        SetCostumeFile(Path.Join(costumeDir, "char_event.gfs"), path => costume.Config.Event.GfsPath = CreateBindPath(ctx, costumeDir, path));
 
-        SetCostumeFile(Path.Join(costumeDir, "char_battle.tex"), path => costume.Config.Battle.TexPath = path);
-        SetCostumeFile(Path.Join(costumeDir, "char_field.tex"), path => costume.Config.Field.TexPath = path);
-        SetCostumeFile(Path.Join(costumeDir, "char_event.tex"), path => costume.Config.Event.TexPath = path);
+        SetCostumeFile(Path.Join(costumeDir, "char_battle.tex"), path => costume.Config.Battle.TexPath = CreateBindPath(ctx, costumeDir, path));
+        SetCostumeFile(Path.Join(costumeDir, "char_field.tex"), path => costume.Config.Field.TexPath = CreateBindPath(ctx, costumeDir, path));
+        SetCostumeFile(Path.Join(costumeDir, "char_event.tex"), path => costume.Config.Event.TexPath = CreateBindPath(ctx, costumeDir, path));
 
         SetCostumeFile(Path.Join(costumeDir, "music.pme"), path => costume.MusicScriptFile = path);
         SetCostumeFile(Path.Join(costumeDir, "battle.theme.pme"), path => costume.BattleThemeFile = path);
@@ -61,21 +60,11 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCo
         }
     }
 
-    private void BindAssets(Costume costume)
+    private string CreateBindPath(CostumeContext ctx, string costumeDir, string assetFile)
     {
-        IfNotNull(costume.Config.Battle.GfsPath, path => this.BindAsset(costume, path!, AssetType.CharBattleGfs));
-        IfNotNull(costume.Config.Field.GfsPath, path => this.BindAsset(costume, path!, AssetType.CharFieldGfs));
-        IfNotNull(costume.Config.Event.GfsPath, path => this.BindAsset(costume, path!, AssetType.CharEventGfs));
-
-        IfNotNull(costume.Config.Battle.TexPath, path => this.BindAsset(costume, path!, AssetType.CharBattleTex));
-        IfNotNull(costume.Config.Field.TexPath, path => this.BindAsset(costume, path!, AssetType.CharFieldTex));
-        IfNotNull(costume.Config.Event.TexPath, path => this.BindAsset(costume, path!, AssetType.CharEventTex));
-    }
-
-    private void BindAsset(Costume costume, string assetPath, AssetType type)
-    {
-        var ogPath = AssetUtils.GetAsssetPath(costume.Character, costume.CostumeId, type);
-        this.criFsApi.AddBind(ogPath, assetPath);
+        var bindPath = Path.GetRelativePath(ctx.BaseDir, assetFile).Replace('\\', '/');
+        _criFsApi.AddBind(bindPath, assetFile);
+        return bindPath;
     }
 
     private static void SetCostumeFile(string modFile, Action<string> setFile)
@@ -91,13 +80,13 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCo
     /// </summary>
     private Costume? CreateOrFindCostume(string ownerId, Character character, string name)
     {
-        var existingCostume = this.costumes.FirstOrDefault(x => x.Character == character && x.Name == name);
+        var existingCostume = costumes.FirstOrDefault(x => x.Character == character && x.Name == name);
         if (existingCostume != null)
         {
             return existingCostume;
         }
 
-        var newCostume = this.costumes.GetNewCostume();
+        var newCostume = costumes.GetNewCostume();
         if (newCostume != null)
         {
             newCostume.Name = name;
