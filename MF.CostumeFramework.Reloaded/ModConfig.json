@@ -10,12 +10,69 @@
   "ModR2RManagedDll64": "x64/MF.CostumeFramework.Reloaded.dll",
   "ModNativeDll32": "",
   "ModNativeDll64": "",
+  "Tags": [],
+  "CanUnload": false,
+  "HasExports": false,
   "IsLibrary": false,
   "ReleaseMetadataFileName": "MF.CostumeFramework.Reloaded.ReleaseMetadata.json",
-  "PluginData": {},
+  "PluginData": {
+    "GameBananaDependencies": {
+      "IdToConfigMap": {
+        "SharedScans.Reloaded": {
+          "Config": {
+            "ItemType": "Mod",
+            "ItemId": 495507
+          },
+          "ReleaseMetadataName": "SharedScans.Reloaded.ReleaseMetadata.json"
+        }
+      }
+    },
+    "GitHubDependencies": {
+      "IdToConfigMap": {
+        "reloaded.sharedlib.hooks": {
+          "Config": {
+            "UserName": "Sewer56",
+            "RepositoryName": "Reloaded.SharedLib.Hooks.ReloadedII",
+            "UseReleaseTag": true,
+            "AssetFileName": "reloaded.sharedlib.hooks.zip"
+          },
+          "ReleaseMetadataName": "Sewer56.Update.ReleaseMetadata.json"
+        },
+        "Reloaded.Memory.SigScan.ReloadedII": {
+          "Config": {
+            "UserName": "Reloaded-Project",
+            "RepositoryName": "Reloaded.Memory.SigScan",
+            "UseReleaseTag": false,
+            "AssetFileName": "Mod.zip"
+          },
+          "ReleaseMetadataName": "Reloaded.Memory.SigScan.ReloadedII.ReleaseMetadata.json"
+        },
+        "crifs.v2.hook": {
+          "Config": {
+            "UserName": "Sewer56",
+            "RepositoryName": "CriFs.V2.Hook.ReloadedII",
+            "UseReleaseTag": false,
+            "AssetFileName": "Mod.zip"
+          },
+          "ReleaseMetadataName": "CriFs.V2.Hook.ReleaseMetadata.json"
+        }
+      }
+    },
+    "GameBanana": {
+      "ItemType": "Mod",
+      "ItemId": 548496
+    }
+  },
   "IsUniversalMod": false,
-  "ModDependencies": [ "reloaded.sharedlib.hooks", "Reloaded.Memory.SigScan.ReloadedII", "crifs.v2.hook", "MF.Toolkit.Reloaded" ],
+  "ModDependencies": [
+    "crifs.v2.hook",
+    "MF.Toolkit.Reloaded",
+    "Reloaded.Memory.SigScan.ReloadedII",
+    "reloaded.sharedlib.hooks"
+  ],
   "OptionalDependencies": [],
-  "SupportedAppId": ["metaphor.exe"],
+  "SupportedAppId": [
+    "metaphor.exe"
+  ],
   "ProjectUrl": ""
 }
