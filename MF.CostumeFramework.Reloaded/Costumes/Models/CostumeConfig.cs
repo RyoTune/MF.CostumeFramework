@@ -6,11 +6,11 @@ internal class CostumeConfig
 {
     public string? Name { get; set; }
 
-    public Model Battle { get; } = new();
+    public Model Battle { get; set; } = new();
 
-    public Model Field { get; } = new();
+    public Model Field { get; set; } = new();
 
-    public Model Event { get; } = new();
+    public Model Event { get; set; } = new();
 
     public string? GetAssetPath(CostumeAsset assetType)
      => assetType switch

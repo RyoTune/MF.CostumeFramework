@@ -32,6 +32,14 @@ internal class CostumeFactory(ICriFsRedirectorApi criFsApi, IMessage msg, GameCo
     private static void ApplyCostumeConfig(Costume costume, CostumeConfig config)
     {
         IfNotNull(config.Name, value => costume.Config.Name = value);
+
+        IfNotNull(config.Battle.GfsPath, value => costume.Config.Battle.GfsPath = value);
+        IfNotNull(config.Field.GfsPath, value => costume.Config.Field.GfsPath = value);
+        IfNotNull(config.Event.GfsPath, value => costume.Config.Event.GfsPath = value);
+
+        IfNotNull(config.Battle.TexPath, value => costume.Config.Battle.TexPath = value);
+        IfNotNull(config.Field.TexPath, value => costume.Config.Field.TexPath = value);
+        IfNotNull(config.Event.TexPath, value => costume.Config.Event.TexPath = value);
     }
 
     private void LoadCostumeFiles(CostumeContext ctx, Costume costume, string costumeDir)
