@@ -141,7 +141,7 @@ public enum GearEquippable
     NotEquippable = 0,
     AnyoneEquippable = -1,
 
-    Player = 1 << 1,
+    Player, Prince = 1 << 1,
     Strohl = 1 << 2,
     Hulkenberg = 1 << 3,
     Heismay = 1 << 4,
@@ -149,7 +149,6 @@ public enum GearEquippable
     Eupha = 1 << 6,
     Fiedlio = 1 << 7,
     Basilio = 1 << 8,
-    Prince = 1 << 9,
     Grius = 1 << 10,
     Gallica = 1 << 11,
     PX = 1 << 12,
