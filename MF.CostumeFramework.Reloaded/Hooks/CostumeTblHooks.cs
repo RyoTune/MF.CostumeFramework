@@ -141,7 +141,8 @@ public enum GearEquippable
     NotEquippable = 0,
     AnyoneEquippable = -1,
 
-    Player, Prince = 1 << 1,
+    Player = 1 << 1,
+    Prince = 1 << 1,
     Strohl = 1 << 2,
     Hulkenberg = 1 << 3,
     Heismay = 1 << 4,
