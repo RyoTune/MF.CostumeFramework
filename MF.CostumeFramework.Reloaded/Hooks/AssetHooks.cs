@@ -91,8 +91,12 @@ internal unsafe class AssetHooks : IUseConfig
         }
 
         Log.Debug($"{nameof(GetAssetPath)} || {assetType} || {character} || {minorId} || {subId}");
-
+        
+        if (character == Character.Prince) character = Character.Player;
+        
         var costumeItemId = _mf.CharaGetEquip((int)character, 4) - CostumeItem.BASE_ITEM_ID;
+        Log.Debug($"{nameof(GetAssetPath)} || Costume Item ID: {costumeItemId}");
+        
         string? newAssetPath = null;
         if (_registry.TryGetCostumeByItemId(character, costumeItemId, out var costume))
         {

@@ -21,6 +21,12 @@ internal class CostumeRegistry
     public bool TryGetCostumeByItemId(Character character, int costumeItemId, [NotNullWhen(true)] out Costume? costume)
     {
         costume = this.costumes.FirstOrDefault(x => x.Character == character && x.CostumeItemId == costumeItemId);
+        
+        // If Player, also try searching for costumes for Prince.
+        if (character == Character.Player && costume == null)
+            costume = this.Costumes.FirstOrDefault(x =>
+                x.Character == Character.Prince && x.CostumeItemId == costumeItemId);
+        
         return costume != null;
     }
 
