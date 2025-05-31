@@ -56,7 +56,7 @@ internal unsafe class CostumeTblHooks
         for (int i = ogTbl->NumEntries; i < newTbl.NumEntries; i++)
         {
             var item = newTbl.GetCostume(i);
-            *item = new CostumeItem();
+            *item = new();
             item->MsgSerial.UseCustomSerial();
 
             var newCostume = _registry.Costumes.FirstOrDefault(x => !addedCostumes.Contains(x));
@@ -66,7 +66,8 @@ internal unsafe class CostumeTblHooks
                 item->CostumeId = newCostume.CostumeId;
                 item->Rarity = Rarity.Legendary;
                 newCostume.SetCostumeItemId(i);
-                _inv.UnlockItem(i + 0x6000);
+                
+                if (newCostume.IsEnabled) _inv.UnlockItem(i + 0x6000);
 
                 _msg.SetItemMessage(i + 0x6000, ItemMsg.Name, newCostume.ItemMessageLabel!);
                 _msg.SetItemMessage(i + 0x6000, ItemMsg.Description, newCostume.ItemMessageLabel!);
